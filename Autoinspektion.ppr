@@ -1,0 +1,59 @@
+program Autoinspektion;
+
+{$mode objfpc}{$H+}
+
+uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
+  Classes, Sysutils, crt
+  { you can add units after this };
+type
+  TCar = Class
+    public
+      carName : String;
+      baujahr : Integer;
+      yearOfLastInspection : Integer;
+      Constructor Create(newName: String; newBaujahr : Integer);
+      Procedure Inspekt;
+  end;
+  cararray = array[1..6] of TCar;
+
+var
+  searchTerm: String;
+  cars : cararray;
+  Car : TCar;
+constructor TCar.Create(newName: String; newBaujahr : Integer);
+begin
+  carName := newName;
+  baujahr := newBaujahr;
+  yearOfLastInspection := 2010;
+end;
+Procedure TCar.Inspekt;
+begin
+  yearOfLastInspection := 2020;
+end;
+
+begin
+  cars[1] := Tcar.Create('Mercedes G',2003);
+  cars[2] := Tcar.Create('Audi A6',2012);
+  cars[3] := Tcar.Create('Audi A8',2009);
+  cars[4] := Tcar.Create('BMW 3',2015);
+  cars[5] := Tcar.Create('Toyota Camry',1996);
+  cars[6] := Tcar.Create('Honda CRV',2017);
+
+  ClrScr;
+  Writeln('Geben Sie einen Suchbegriff ein: ');
+  Readln(searchTerm);
+
+  for Car in cars do
+  begin
+    if pos(searchTerm,Car.carName) <> 0 then
+    begin
+      Writeln(Car.carName + ' Baujahr: ' + IntToStr(Car.baujahr) + ' Letzte Inspektion: ' + IntToStr(Car.yearOfLastInspection));
+      Car.Inspekt();
+      Writeln('Letzte Inspection: ' +  IntToStr(Car.yearOfLastInspection));
+    end;
+  end;
+end.
+
